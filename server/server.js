@@ -15,6 +15,8 @@ app.use(cors());
 let connectedUsers = [];
 let rooms = [];
 
+app.get('/', (req, res) => res.send("Hello"))
+
 app.get('/api/room_exits/:roomId', (req, res, next) => {
     const { roomId } = req.params;
     const room = rooms.find((room) => room.id === roomId);
@@ -28,7 +30,7 @@ app.get('/api/room_exits/:roomId', (req, res, next) => {
         }
     } else {
         return res.send({ roomExists: false });
-    };
+    }
 });
 
 const io = require('socket.io')(server, {
