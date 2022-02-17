@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { connect } from "react-redux";
-import { setConnectOnlyWithAudio } from "../store/actions";
+import { setConnectOnlyWithAudio, setIdentity, setRoomId } from "../store/actions";
 import { getRoomExits } from "../utils/api";
 import ErrorMessage from "./ErrorMessage";
 import JoinRoomButton from "./JoinRoomButton";
@@ -10,13 +10,14 @@ import { useNavigate } from "react-router-dom";
 
 const JoinRoomContent = (props) => {
 
-    const { isRoomHost, setConnectOnlyWithAudio, connectedOnlyWithAudio } = props;
+    const { isRoomHost, setConnectOnlyWithAudio, connectedOnlyWithAudio, setIdentityAction, setRoomIdAction } = props;
     const [roomIdValue, setRoomIdValue] = useState('');
     const [nameValue, setNameValue] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
     const history = useNavigate();
 
     const handleJoinRoom = async () => {
+        setIdentityAction(nameValue);
         if (isRoomHost) {
             createRoom();
         }
@@ -33,6 +34,7 @@ const JoinRoomContent = (props) => {
                 setErrorMessage('Room is full');
             }
             else {
+                setRoomIdAction(roomIdValue);
                 history('/room');
             }
         }   
@@ -73,7 +75,9 @@ const mapStoreStateToProps = (state) => {
 
 const mapActionsToProps = (dispatch) => {
     return {
-        setConnectOnlyWithAudio : (onlyWithAudio) => dispatch(setConnectOnlyWithAudio(onlyWithAudio))
+        setConnectOnlyWithAudio : (onlyWithAudio) => dispatch(setConnectOnlyWithAudio(onlyWithAudio)),
+        setIdentityAction : (identiy) => dispatch(setIdentity(identiy)),
+        setRoomIdAction : (roomId) => dispatch(setRoomId(roomId))
     }
 };
  
