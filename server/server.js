@@ -40,7 +40,7 @@ const io = require('socket.io')(server, {
     }
 });
 
-io.on('connetion' , (clientSocket) => {
+io.on('connection' , (clientSocket) => {
     console.log(`user connected`);
     console.log(`user id : ${ clientSocket.id }`);
 });
