@@ -40,6 +40,11 @@ const io = require('socket.io')(server, {
     }
 });
 
+io.on('connetion' , (clientSocket) => {
+    console.log(`user connected`);
+    console.log(`user id : ${ clientSocket.id }`);
+});
+
 server.listen(PORT, () => {
     console.log(`Server is listening on ${ PORT }`);
 });
