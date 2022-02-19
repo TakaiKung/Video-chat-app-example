@@ -28,8 +28,8 @@ const JoinRoomContent = (props) => {
 
     const joinRoom = async () => {
         const responseMessage = await getRoomExits(roomIdValue);
-        const { roomExits, full } = responseMessage;
-        if (roomExits) {
+        const { roomExists, full } = responseMessage;
+        if (roomExists) {
             if (full) {
                 setErrorMessage('Room is full');
             }

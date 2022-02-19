@@ -49,6 +49,13 @@ io.on("connection" , (socket) => {
         createNewRoomHandler(data, socket);
     });
 
+    socket.on('join-room', (data) => {
+        joinRoomHandler(data, socket);
+    });
+
+    socket.on('disconnect', () => {
+        disconnectHandler(socket);
+    });
 });
 
 // Socket io Handler
@@ -79,6 +86,47 @@ const createNewRoomHandler = (data, socket) => {
 
         socket.emit('room-update', { connectedUsers : newRoom.connectedUsers })
 };
+
+const joinRoomHandler = (data, socket) => {
+    const { identity, roomId } = data;
+    const newUser = {
+        identity,
+        id : uuidv4(),
+        socketId : socket.id,
+        roomId
+    }
+
+    const room = rooms.find(room => room.id === roomId);
+    room.connectedUsers = [...room.connectedUsers, newUser];
+
+    socket.join(roomId);
+
+    connectedUsers = [...connectedUsers, newUser];
+
+    io.to(roomId).emit('room-update', { connectedUsers: room.connectedUsers });
+};
+
+const disconnectHandler = (socket) => {
+    const user = connectedUsers.find(user => user.socketId === socket.id);
+    if (user) {
+        const room = rooms.find(room => room.id === user.roomId);
+        room.connectedUsers = room.connectedUsers.filter(user => user.socketId !== socket.id);
+        socket.leave(user.roomId);
+        io.to(room.id).emit('room-update', {
+            connectedUsers : room.connectedUsers
+        });
+
+        if (room.connectedUsers.length > 0) {
+            io.to(room.id).emit("room-update", {
+                connectedUsers: room.connectedUsers
+            });
+        }
+        else {
+            room = room.filter((r) => r.id !== room.id);
+        }
+    }
+};
+
 
 server.listen(PORT, () => {
     console.log(`Server is listening on ${ PORT }`);
