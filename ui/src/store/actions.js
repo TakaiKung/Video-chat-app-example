@@ -29,8 +29,8 @@ export const setIdentity = (identity) => {
 
 export const setRoomId = (roomId) => {
     return {
-        type : Actions.SET_IS_ROOM_HOST,
-        roomId
+        type : Actions.SET_ROOM_ID,
+        roomId : roomId
     }
 };
 

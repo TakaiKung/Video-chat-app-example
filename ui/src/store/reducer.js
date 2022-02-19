@@ -4,7 +4,7 @@ const initState = {
     identity : '',
     isRoomHost : false,
     connectedOnlyWithAudio : false,
-    roomId : null,
+    roomId : '',
     showOverlay : true
 };
 
