@@ -76,6 +76,8 @@ const createNewRoomHandler = (data, socket) => {
         rooms = [...rooms, newRoom];
 
         socket.emit('room-id', { roomId });
+
+        socket.emit('room-update', { connectedUsers : newRoom.connectedUsers })
 };
 
 server.listen(PORT, () => {

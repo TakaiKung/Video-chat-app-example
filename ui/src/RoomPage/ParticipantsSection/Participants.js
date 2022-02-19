@@ -1,34 +1,36 @@
-const dummyParticipants = [
-    {
-        identity : 'Jake'
-    },
-    {
-        identity : 'Anna'
-    },
-    {
-        identity : 'Juke'
-    },
-    {
-        identity : 'Joke'
-    }
-];
+import { connect } from 'react-redux';
+
+// const dummyParticipants = [
+//     {
+//         identity : 'Jake'
+//     },
+//     {
+//         identity : 'Anna'
+//     },
+//     {
+//         identity : 'Juke'
+//     },
+//     {
+//         identity : 'Joke'
+//     }
+// ];
 
 const SingleParticipant = (props) => {
-    const { identity, lastItem, participant } = props;
+    const { identity, lastItem } = props;
     return <>
         <p className="participants_paragraph">{ identity }</p>
         { !lastItem && <span className="participants_seperator_line"></span> }
     </>;
 };
 
-const Partincipants = () => {
+const Partincipants = ({ participants }) => {
     return (
         <div className="participants_container">
-            { dummyParticipants.map((participant, index) => {
+            { participants.map((participant, index) => {
                 return (
                     <SingleParticipant
                         key = {participant.identity}
-                        lastItem = { dummyParticipants.length }
+                        lastItem = {participants.length === index + 1}
                         participant = { participant }
                         identity = { participant.identity }
                     />
@@ -37,5 +39,9 @@ const Partincipants = () => {
         </div>
     );
 };
+
+const mapStoreStateToProps = (state) => {
+    return { ...state }
+};
  
-export default Partincipants;
+export default connect(mapStoreStateToProps)(Partincipants);
