@@ -99,7 +99,16 @@ const joinRoomHandler = (data, socket) => {
     const room = rooms.find(room => room.id === roomId);
     room.connectedUsers = [...room.connectedUsers, newUser];
 
+    // prepare other connection to new user 
+    room.connectedUsers.forEach((user) => {
+        if (user.socketId !== socket.id) {
+            const data = { connUserSocketId : socket.id }
+            io.to(user.socketId).emit("conn-prepare", data)
+        }
+    });
+
     socket.join(roomId);
+    
 
     connectedUsers = [...connectedUsers, newUser];
 
