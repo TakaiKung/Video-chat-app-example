@@ -53,8 +53,16 @@ io.on("connection" , (socket) => {
         joinRoomHandler(data, socket);
     });
 
+    socket.on('conn-signal', (data) => {
+        signalingHandler(data, socket);
+    });
+
     socket.on('disconnect', () => {
         disconnectHandler(socket);
+    });
+
+    socket.on('conn-init', (data) => {
+        initializeConnectionHandler(data, socket);
     });
 });
 
@@ -149,6 +157,18 @@ const disconnectHandler = (socket) => {
     }
 };
 
+const signalingHandler = (data, socket) => {
+    const { connUserSocketId, signal } = data;
+    const signalingData = { signal, connUserSocketId: socket.id };
+    // send signal to user which have socketId in connectedUsersSocketId
+    io.to(connUserSocketId).emit('conn-signal', signalingData);
+};
+
+const initializeConnectionHandler = (data, socket) => {
+    const { connUserSocketId } = data;
+    const initData = { connUserSocketId: socket.id };
+    io.to(connUserSocketId).emit('conn-init', initData);
+};
 
 // start the app by listening on the port
 server.listen(PORT, () => {

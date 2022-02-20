@@ -30,7 +30,9 @@ export const showLocalPreview = (stream) => {
 };
 
 const peers = {};
+let streams = [];
 
+// get rtc ice servers configuration
 const getConfiguration = () => {
     return {
         iceServers : [
@@ -41,8 +43,6 @@ const getConfiguration = () => {
     }
 };
 
-
-//prepare new peer connection
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     const configuration = getConfiguration();
     peers[connUserSocketId] = new Peer({
@@ -51,8 +51,32 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
         stream : localStream
     });
 
-    peers[connUserSocketId].on('stream', (stream) => {
-        
+    peers[connUserSocketId].on('signal', (data) => {
+        // WebRTC offer, WebRTC Answer (SDP information), ice candidates
+        const signalData = {
+            signal: data,
+            connUserSocketId : connUserSocketId
+        };
+        wss.signalPeerData(signalData);
     });
 
+    // add stream to peers
+    peers[connUserSocketId].on('stream', (stream) => {
+        console.log('new stream came');
+        addStream(stream, connUserSocketId);
+        streams = [...streams, stream]; // save new stream to streams array 
+    });
 };
+
+export const handleSignalingData = (data) => {
+    // add signaling data to peer connection
+    peers[data.connUserSocketId].signal(data.signal);
+};
+
+// display incoming stream
+const addStream = (stream, connUserSocketId) => {
+
+};
+
+
+
