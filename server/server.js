@@ -87,6 +87,8 @@ const createNewRoomHandler = (data, socket) => {
         socket.emit('room-update', { connectedUsers : newRoom.connectedUsers })
 };
 
+
+//handler for joining a room
 const joinRoomHandler = (data, socket) => {
     const { identity, roomId } = data;
     const newUser = {
@@ -96,7 +98,9 @@ const joinRoomHandler = (data, socket) => {
         roomId
     }
 
+    // find room in rooms
     const room = rooms.find(room => room.id === roomId);
+    // add new user to room connected users
     room.connectedUsers = [...room.connectedUsers, newUser];
 
     // prepare other connection to new user 
@@ -107,24 +111,33 @@ const joinRoomHandler = (data, socket) => {
         }
     });
 
+    // add new user to connected users array
     socket.join(roomId);
     
-
+    // add to connected users list
     connectedUsers = [...connectedUsers, newUser];
 
+    // tell Client to update the room
     io.to(roomId).emit('room-update', { connectedUsers: room.connectedUsers });
 };
 
+
+//remove socket from connected users array
 const disconnectHandler = (socket) => {
+    // find the user with the socket id
     const user = connectedUsers.find(user => user.socketId === socket.id);
+    // remove socket from connected users array
     if (user) {
+        // find the room with the user id
         const room = rooms.find(room => room.id === user.roomId);
+        // remove user from connected users array
         room.connectedUsers = room.connectedUsers.filter(user => user.socketId !== socket.id);
         socket.leave(user.roomId);
         io.to(room.id).emit('room-update', {
             connectedUsers : room.connectedUsers
         });
 
+        // check if room has connected users
         if (room.connectedUsers.length > 0) {
             io.to(room.id).emit("room-update", {
                 connectedUsers: room.connectedUsers
@@ -137,6 +150,7 @@ const disconnectHandler = (socket) => {
 };
 
 
+// start the app by listening on the port
 server.listen(PORT, () => {
     console.log(`Server is listening on ${ PORT }`);
 });

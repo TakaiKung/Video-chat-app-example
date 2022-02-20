@@ -14,10 +14,10 @@ const JoinRoomPage = (props) => {
     const search = useLocation().search;
 
     useEffect(() => {
-        const isRoomHost = new URLSearchParams(search).get('host'); 
-        if (isRoomHost) {
-            setIsRoomHostAction(true);
-        }
+      const isRoomHost = new URLSearchParams(search).get("host");
+      if (isRoomHost) {
+        setIsRoomHostAction(true);
+      }
     }, []);
 
     return (
