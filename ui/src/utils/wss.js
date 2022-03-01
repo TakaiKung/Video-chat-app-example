@@ -54,11 +54,6 @@ export const createNewRoom = (identity) => {
     socket.emit('create-new-room', data);
 };
 
-/**
- * It sends a message to the server to join a room.
- * @param identity - The name of the user.
- * @param roomId - The room ID that you want to join.
- */
 export const joinRoom = (identity, roomId) => {
     const data = {
         roomId,

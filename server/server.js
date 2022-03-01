@@ -113,9 +113,10 @@ const joinRoomHandler = (data, socket) => {
 
     // prepare other connection to new user 
     room.connectedUsers.forEach((user) => {
+        // send prepare to user except me
         if (user.socketId !== socket.id) {
             const data = { connUserSocketId : socket.id }
-            io.to(user.socketId).emit("conn-prepare", data)
+            io.to(user.socketId).emit("conn-prepare", data) 
         }
     });
 
