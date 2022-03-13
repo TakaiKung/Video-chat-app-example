@@ -32,6 +32,7 @@ app.get('/api/room_exits/:roomId', (req, res, next) => {
     } else {
         return res.send({ roomExists: false });
     }
+    
 });
 
 const io = require('socket.io')(server, {
